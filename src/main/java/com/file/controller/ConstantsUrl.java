@@ -16,5 +16,4 @@ import org.springframework.stereotype.Component;
 	
 	public static final String GET_ALL_MOVIE_WITHPAGE="/allmoviepage";
 	public static final String GET_ALL_MOVIE_WITHPAGE_AND_SORT="/allmoviepagesort";
-	
 }

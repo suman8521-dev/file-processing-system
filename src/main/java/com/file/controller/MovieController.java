@@ -1,9 +1,7 @@
 package com.file.controller;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,7 +26,6 @@ import com.file.dto.MovieDto;
 import com.file.dto.MoviePageResponse;
 import com.file.service.MovieService;
 import com.file.service.MoviesServises;
-
 import jakarta.servlet.http.HttpServletResponse;
 
 @RestController
@@ -58,7 +54,7 @@ public class MovieController {
 
 	@GetMapping(ConstantsUrl.GET_FILENAME)
 	public void serverfileHandler(@PathVariable("filename") String filename, HttpServletResponse response)
-			throws IOException {
+            throws Exception {
 
 		InputStream resourceFile = m_service.getResourceFile(path, filename);
 		response.setContentType(MediaType.IMAGE_PNG_VALUE);
@@ -130,6 +126,15 @@ public class MovieController {
 		
 	}
 
+    @GetMapping("/download/{filename}")
+    public ResponseEntity<byte[]> downloadMovie(@PathVariable String filename) throws Exception {
+
+        byte[] fileData = m_service.downloadMovieFile(filename);
+
+        return ResponseEntity.ok()
+                .header("Content-Disposition", "attachment; filename=" + filename)
+                .body(fileData);
+    }
 
 	private MovieDto convertMovieDto(String movieDtoObj) throws JsonMappingException, JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();

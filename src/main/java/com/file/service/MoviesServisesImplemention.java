@@ -29,14 +29,15 @@ public class MoviesServisesImplemention  implements MoviesServises{
 	
 	@Autowired
 	private MovieService service;
-	@Autowired
-	private MovieService fileService;
-	
+
 	@Value("${project.poster}")
 	private String path;
 	
 	@Value("${base.url}")
 	private String url;
+
+
+
 
 	@Override
 	public MovieDto addmovie(MovieDto movieDto, MultipartFile file) throws IOException {
@@ -47,7 +48,7 @@ public class MoviesServisesImplemention  implements MoviesServises{
 		
 		String uploadFile = service.uploadFile(path, file);
 		movieDto.setPoster(uploadFile);
-		
+
 		Movie m=new Movie(
 		null,
 		movieDto.getTitle(),
@@ -122,7 +123,7 @@ public class MoviesServisesImplemention  implements MoviesServises{
 		if(file !=null) {
 			Files.deleteIfExists(Paths.get(path+File.separator+filename));
 			
-			filename=fileService.uploadFile(path, file);
+			filename=service.uploadFile(path, file);
 		}
 		
 		movieDto.setPoster(filename); // set poster value
@@ -214,5 +215,6 @@ public class MoviesServisesImplemention  implements MoviesServises{
 		return new MoviePageResponse(movieDto, pageNumber, pageSize, moviepage.getTotalPages(), moviepage.getTotalElements(), moviepage.isLast());
 
 	}
+
 
 }

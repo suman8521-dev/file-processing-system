@@ -11,6 +11,8 @@ import javax.crypto.SecretKey;
 @Service
 public class MovieServiceImpl implements MovieService {
 
+    @Value("${project.poster}")
+    private String path;
 
     private final SecretKey secretKey;
     public MovieServiceImpl(@Value("${crypto.secret.key}") String key) {
@@ -52,5 +54,16 @@ public class MovieServiceImpl implements MovieService {
 
         return new ByteArrayInputStream(decryptedBytes);
 	}
+
+    @Override
+    public byte[] downloadMovieFile(String filename) throws Exception {
+        String filepath = path + "/" + filename;
+
+        byte[] encryptedBytes = Files.readAllBytes(Paths.get(filepath));
+        String encrypted = new String(encryptedBytes);
+
+        return CryptoUtil.decrypt(encrypted, secretKey);
+    }
+
 
 }
