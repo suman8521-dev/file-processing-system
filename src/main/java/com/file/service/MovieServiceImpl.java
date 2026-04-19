@@ -1,37 +1,56 @@
 package com.file.service;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import com.file.utility.CryptoUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import javax.crypto.SecretKey;
 
 @Service
 public class MovieServiceImpl implements MovieService {
 
-	@Override
+
+    private final SecretKey secretKey;
+    public MovieServiceImpl(@Value("${crypto.secret.key}") String key) {
+        this.secretKey = CryptoUtil.getKeyFromString(key);
+    }
+
+
+    @Override
 	public String uploadFile(String path, MultipartFile file) throws IOException {
 
-		String filename = file.getOriginalFilename(); // get name of the file
+        String filename = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        String filepath = path + File.separator + filename;
 
-		String filepath = path + File.separator + filename; // get the file path
-		File file2 = new File(path); // create the file object
-		if (!file2.exists()) {
-			file2.mkdir();
-		}
+        File dir = new File(path);
+        if (!dir.exists()) dir.mkdirs();
 
-		Files.copy(file.getInputStream(), Paths.get(filepath), StandardCopyOption.REPLACE_EXISTING);
-		return filename;
+        try {
+            byte[] fileBytes = file.getBytes();
+
+            String encrypted = CryptoUtil.encrypt(fileBytes, secretKey);
+
+            Files.write(Paths.get(filepath), encrypted.getBytes());
+
+        } catch (Exception e) {
+            throw new RuntimeException("Encryption failed", e);
+        }
+
+        return filename;
 	}
 
 	@Override
-	public InputStream getResourceFile(String path, String filename) throws FileNotFoundException {
-		String filepath = path + File.separator + filename;
-		return new FileInputStream(filepath);
+	public InputStream getResourceFile(String path, String filename) throws Exception {
+        String filepath = path + File.separator + filename;
+
+        byte[] encryptedBytes = Files.readAllBytes(Paths.get(filepath));
+        String encryptedString = new String(encryptedBytes);
+
+        byte[] decryptedBytes = CryptoUtil.decrypt(encryptedString, secretKey);
+
+        return new ByteArrayInputStream(decryptedBytes);
 	}
 
 }
