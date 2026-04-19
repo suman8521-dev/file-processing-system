@@ -62,4 +62,19 @@ public class CryptoUtil {
         byte[] decoded = Base64.getDecoder().decode(key);
         return new SecretKeySpec(decoded, ALGO);
     }
+
+    public static String encryptS(String data) {
+        try {
+            SecretKey key = KeyGenerator.getInstance("AES").generateKey();
+
+            Cipher cipher = Cipher.getInstance("AES");
+            cipher.init(Cipher.ENCRYPT_MODE, key);
+
+            return Base64.getEncoder()
+                    .encodeToString(cipher.doFinal(data.getBytes()));
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
