@@ -17,7 +17,7 @@ public class ScanScheduler {
     @Autowired
     private ScannerService scannerService;
 
-    @Scheduled(fixedDelay = 3000) // every 5 min
+    @Scheduled(fixedDelay = 3000)
     public void runScheduledScan() {
 
         List<DbConnection> connections = repo.findAll();
