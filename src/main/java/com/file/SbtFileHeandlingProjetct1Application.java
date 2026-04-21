@@ -1,12 +1,8 @@
 package com.file;
-import com.file.utility.CryptoUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-
-import javax.crypto.SecretKey;
-import java.security.*;
-import java.util.Base64;
-
+import org.springframework.scheduling.annotation.EnableScheduling;
+@EnableScheduling
 @SpringBootApplication
 public class SbtFileHeandlingProjetct1Application {
 
