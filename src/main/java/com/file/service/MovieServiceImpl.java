@@ -56,7 +56,7 @@ public class MovieServiceImpl implements MovieService {
 	}
 
     @Override
-    public byte[] downloadMovieFile(String filename) throws Exception {
+    public byte[] downloadMovieFile(String filename ) throws Exception {
         String filepath = path + "/" + filename;
 
         byte[] encryptedBytes = Files.readAllBytes(Paths.get(filepath));
