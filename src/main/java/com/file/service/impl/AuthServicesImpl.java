@@ -12,19 +12,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AuthServicesImpl implements AuthServices {
 
-    private  final Userservices userservices;
     private final UserRepo userRepo;
     private final PasswordEncoder encoder;
 
     @Override
     public AuthResponse signup(final SignupRequest req) {
-        User existingUser = userservices.getUserByEmail(req.getEmail());
+        Optional<User> existingUser = userRepo.findByEmail(req.getEmail());
 
         if (existingUser != null) {
             throw new RuntimeException("Email already registered");
@@ -56,4 +56,6 @@ public class AuthServicesImpl implements AuthServices {
     public AuthResponse login(final LoginRequest loginRequest) {
         return null;
     }
+
+
 }
