@@ -4,6 +4,7 @@ import com.file.entity.UserRole;
 import com.file.entity.req.LoginRequest;
 import com.file.entity.req.SignupRequest;
 import com.file.entity.resp.AuthResponse;
+import com.file.mapper.UserMapper;
 import com.file.repo.UserRepo;
 import com.file.service.AuthServices;
 import com.file.service.Userservices;
@@ -41,10 +42,13 @@ public class AuthServicesImpl implements AuthServices {
                 .phone(req.getPhone())
                 .lastLogin(LocalDateTime.now())
                 .build();
-        userRepo.save(user);
+        User savedUser=userRepo.save(user);
 
         return AuthResponse.builder()
+                .title("Welcome "+savedUser.getFullName() )
                 .message("Signup successful")
+                .jwt("jwt")
+                .response(UserMapper.toDto(savedUser))
                 .build();
     }
 
