@@ -45,6 +45,7 @@ public class MovieController {
 
 	}
 
+    // http:localhost:8081/file/file_upload
 	@PostMapping(ConstantsUrl.UPLOAD_FILE)
 	public ResponseEntity<String> uploadFileHandler(@RequestPart MultipartFile file) throws IOException {
 		String uploadFilename = m_service.uploadFile(path, file);
